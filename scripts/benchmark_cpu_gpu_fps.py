@@ -17,6 +17,23 @@ DEFAULT_SIZES = (4096, 8192, 16384, 32768, 65536, 131072, 262144)
 DEFAULT_BATCHES = (1, 2, 4, 8, 16, 32)
 
 
+def make_batched_shuffled(base: torch.Tensor, batch: int, seed: int) -> torch.Tensor:
+    """Replicate a cloud by batch, shuffling point order independently per batch.
+
+    `torch_fpsample.sample(..., start_idx=0)` starts from the first point in each
+    batch. Independent per-batch permutations make those start points different
+    while preserving the same point distribution for every batch.
+    """
+    generator = torch.Generator(device="cpu")
+    generator.manual_seed(seed)
+    clouds = []
+    n = base.shape[0]
+    for b in range(batch):
+        perm = torch.randperm(n, generator=generator)
+        clouds.append(base[perm])
+    return torch.stack(clouds, dim=0).contiguous()
+
+
 def ms_avg(values: Iterable[float]) -> float:
     values = list(values)
     return sum(values) / len(values)
@@ -79,6 +96,7 @@ def main() -> None:
     parser.add_argument("--height", type=int, default=5)
     parser.add_argument("--warmup", type=int, default=2)
     parser.add_argument("--repeat", type=int, default=5)
+    parser.add_argument("--shuffle-seed", type=int, default=20260427)
     parser.add_argument("--cpu-only", action="store_true")
     parser.add_argument("--gpu-only", action="store_true")
     args = parser.parse_args()
@@ -108,7 +126,7 @@ def main() -> None:
         k = n // 4
 
         for batch in args.batches:
-            x_cpu = base.unsqueeze(0).repeat(batch, 1, 1).contiguous()
+            x_cpu = make_batched_shuffled(base, batch, args.shuffle_seed + n * 1000 + batch)
             x_gpu = None if args.cpu_only else x_cpu.cuda(non_blocking=False)
             torch.cuda.synchronize() if x_gpu is not None else None
 
