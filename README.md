@@ -2,7 +2,8 @@
 
 PyTorch efficient farthest point sampling (FPS) implementation, adopted from [fpsample](https://github.com/leonardodalinky/fpsample).
 
-**Currently, this project is under heavy development and not ready for production use. If you want to make a contribution on implementing the GPU version, please feel free to contact me and make PRs.**
+**This project currently has a GPU implementation, but its performance is lower than the CPU version in most tested cases. Therefore, I recommend using the original [pytorch_fpsample](https://github.com/leonardodalinky/pytorch_fpsample)'s CPU implementation by default. This CUDA implementation should only be considered when CPU performance is limited or when GPU-side execution is specifically required.**
+
 
 > [!NOTE]
 > Since the PyTorch capsules the native multithread implementation, this project is expected to have a much better performance than the *fpsample* implementation.
@@ -11,7 +12,7 @@ PyTorch efficient farthest point sampling (FPS) implementation, adopted from [fp
 
 ```bash
 # Install from github
-pip install git+https://github.com/leonardodalinky/pytorch_fpsample
+pip install git+https://github.com/hanm2019/pytorch_fpsample
 
 # Build locally
 pip install .
@@ -35,7 +36,8 @@ Size([64, 1024, 3]), Size([64, 1024])
 ```
 
 > [!WARNING]
-> Note: The GPU version is not implemented yet. Only CPU mode is available.
+> By default, if the input `x` is on the GPU, the CUDA implementation will be used; otherwise, the CPU implementation will be used.
+> However, the CUDA implementation may be slower than the CPU implementation in most cases, so please benchmark both backends before using it in performance-critical workloads.
 
 ## Reference
 Bucket-based farthest point sampling (QuickFPS) is proposed in the following paper. The implementation is based on the author's Repo ([CPU](https://github.com/hanm2019/bucket-based_farthest-point-sampling_CPU) & [GPU](https://github.com/hanm2019/bucket-based_farthest-point-sampling_GPU)).
