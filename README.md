@@ -2,7 +2,7 @@
 
 PyTorch efficient farthest point sampling (FPS) implementation, adopted from [fpsample](https://github.com/leonardodalinky/fpsample).
 
-**This project currently has a GPU implementation, but its performance is lower than the CPU version in most tested cases. Therefore, I recommend using the original [pytorch_fpsample](https://github.com/leonardodalinky/pytorch_fpsample)'s CPU implementation by default. This CUDA implementation should only be considered when CPU performance is limited or when GPU-side execution is specifically required.**
+**This project currently has a GPU implementation, but its performance is lower than the CPU version in most tested [cases](https://github.com/leonardodalinky/pytorch_fpsample/issues/1#issuecomment-4327426027). Therefore, I recommend using the original [pytorch_fpsample](https://github.com/leonardodalinky/pytorch_fpsample)'s CPU implementation by default. This CUDA implementation should only be considered when CPU performance is limited or when GPU-side execution is specifically required.**
 
 
 > [!NOTE]
